@@ -1,29 +1,35 @@
-// Variables to track the drag source and target
-let dragSource = null;
+let dragSrc = null;
 
-// Add drag event listeners to all div elements
-document.querySelectorAll('.draggable').forEach((element) => {
-  // When dragging starts
-  element.addEventListener('dragstart', (event) => {
-    dragSource = event.target; // Set the drag source
-    event.dataTransfer.effectAllowed = 'move'; // Indicate the move operation
-  });
+function handleDragStart(e) {
+  dragSrc = this;
+  e.dataTransfer.effectAllowed = 'move';
+}
 
-  // When dragging over a valid drop target
-  element.addEventListener('dragover', (event) => {
-    event.preventDefault(); // Allow the drop
-    event.dataTransfer.dropEffect = 'move'; // Indicate the move operation
-  });
+function handleDragOver(e) {
+  if (e.preventDefault) {
+    e.preventDefault(); // Necessary to allow drop.
+  }
+  e.dataTransfer.dropEffect = 'move';
+  return false;
+}
 
-  // When the element is dropped
-  element.addEventListener('drop', (event) => {
-    event.preventDefault(); // Prevent default behavior
+function handleDrop(e) {
+  // Swap background images
+  if (e.stopPropagation) {
+    e.stopPropagation(); // Stops some browsers from redirecting.
+  }
 
-    // Swap the background images between the drag source and drop target
-    if (dragSource && dragSource !== event.target) {
-      const temp = dragSource.style.backgroundImage;
-      dragSource.style.backgroundImage = event.target.style.backgroundImage;
-      event.target.style.backgroundImage = temp;
-    }
-  });
+  if (dragSrc != this) {
+    const temp = this.style.backgroundImage;
+    this.style.backgroundImage = dragSrc.style.backgroundImage;
+    dragSrc.style.backgroundImage = temp;
+  }
+  return false;
+}
+
+let images = document.querySelectorAll('.image');
+images.forEach(function(img) {
+  img.addEventListener('dragstart', handleDragStart, false);
+  img.addEventListener('dragover', handleDragOver, false);
+  img.addEventListener('drop', handleDrop, false);
 });
