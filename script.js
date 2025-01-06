@@ -1,4 +1,6 @@
 //your code here
+document.addEventListener('DOMContentLoaded', () => {
+    const draggables = document.querySelectorAll('.draggable');
 let dragElem = null;
 draggables.forEach(draggable =>{
   draggable.addEventListener('dragstart',(event) =>{
