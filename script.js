@@ -1,38 +1,29 @@
-//your code here
-document.addEventListener('DOMContentLoaded', () => {
-  const draggables = document.querySelectorAll('.draggable');
-  let draggedElement = null;
+// Variables to track the drag source and target
+let dragSource = null;
 
-  draggables.forEach(draggable => {
-    draggable.addEventListener('dragstart', (event) => {
-      draggedElement = event.target;
-      event.dataTransfer.setData('text/plain', null);
-      event.target.classList.add('selected');
-    });
+// Add drag event listeners to all div elements
+document.querySelectorAll('.draggable').forEach((element) => {
+  // When dragging starts
+  element.addEventListener('dragstart', (event) => {
+    dragSource = event.target; // Set the drag source
+    event.dataTransfer.effectAllowed = 'move'; // Indicate the move operation
+  });
 
-    draggable.addEventListener('dragover', (event) => {
-      event.preventDefault();
-    });
+  // When dragging over a valid drop target
+  element.addEventListener('dragover', (event) => {
+    event.preventDefault(); // Allow the drop
+    event.dataTransfer.dropEffect = 'move'; // Indicate the move operation
+  });
 
-    draggable.addEventListener('drop', (event) => {
-      event.preventDefault();
+  // When the element is dropped
+  element.addEventListener('drop', (event) => {
+    event.preventDefault(); // Prevent default behavior
 
-      if (draggedElement && draggedElement !== event.target) {
-        // Swap background images
-        const temp = draggedElement.style.backgroundImage;
-        draggedElement.style.backgroundImage = event.target.style.backgroundImage;
-        event.target.style.backgroundImage = temp;
-      }
-
-      draggedElement.classList.remove('selected');
-      draggedElement = null;
-    });
-
-    draggable.addEventListener('dragend', () => {
-      if (draggedElement) {
-        draggedElement.classList.remove('selected');
-      }
-      draggedElement = null;
-    });
+    // Swap the background images between the drag source and drop target
+    if (dragSource && dragSource !== event.target) {
+      const temp = dragSource.style.backgroundImage;
+      dragSource.style.backgroundImage = event.target.style.backgroundImage;
+      event.target.style.backgroundImage = temp;
+    }
   });
 });
