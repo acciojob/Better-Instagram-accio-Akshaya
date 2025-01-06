@@ -27,9 +27,11 @@ function handleDrop(e) {
   return false;
 }
 
+// Add event listeners to all image divs
 let images = document.querySelectorAll('.image');
 images.forEach(function(img) {
   img.addEventListener('dragstart', handleDragStart, false);
   img.addEventListener('dragover', handleDragOver, false);
   img.addEventListener('drop', handleDrop, false);
 });
+
