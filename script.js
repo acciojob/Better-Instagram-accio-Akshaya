@@ -1,16 +1,22 @@
-function allowDrop(event){
-	event.preventDefault();
+let draggedElement = null;
+
+function allowDrop(event) {
+  event.preventDefault(); // Allow dropping
 }
 
-function drag(event){
-	event.dataTransfer.setData("text",event.target.id);
+function drag(event) {
+  draggedElement = event.target.closest(".image"); // Store the dragged element
 }
-function drop(event){
-	event.preventDefault();
-	const data =event.dataTransfer.getData("text");
-	const draggable=document.getElementById(data);
-	if(event.target.classList.contains("image")){
-		event.target.parentNode.insertBefore(draggable,event.target.nextSibling);
-	}
-	
+
+function drop(event) {
+  event.preventDefault();
+
+  const targetElement = event.target.closest(".image"); // The element being dropped onto
+
+  if (draggedElement && targetElement && draggedElement !== targetElement) {
+    const temp = document.createElement("div"); // Temporary element for swapping
+    targetElement.replaceWith(temp); // Replace target with temp
+    draggedElement.replaceWith(targetElement); // Replace dragged with target
+    temp.replaceWith(draggedElement); // Replace temp with dragged
+  }
 }
