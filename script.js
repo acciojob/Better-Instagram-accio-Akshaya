@@ -7,7 +7,10 @@ function drag(event){
 }
 function drop(event){
 	event.preventDefault();
-	var Data =event.dataTransfer.getData("text");
-	event.target.appendChild(document.getElementById(data));
+	const data =event.dataTransfer.getData("text");
+	const draggable=document.getElementById(data);
+	if(event.target.classList.contains("image")){
+		event.target.parentNode.insertBefore(draggable,event.target.nextSibling);
+	}
 	
 }

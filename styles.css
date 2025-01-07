@@ -61,7 +61,3 @@ p {
 button {
   margin: 20px;
 }
-.draggable:active {
-  cursor: grabbing;
-  opacity: 0.8;
-}
