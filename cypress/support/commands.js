@@ -1,3 +1,7 @@
+Cypress.Commands.add('dragAndDrop', (source, target) => {
+  cy.get(source).trigger('mousedown', { which: 1 });
+  cy.get(target).trigger('mousemove').trigger('mouseup', { force: true });
+});
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
