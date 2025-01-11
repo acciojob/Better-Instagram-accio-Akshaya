@@ -1,32 +1,55 @@
-let draggedElement = null;
+// Select the parent container and all draggable elements
+const container = document.getElementById('parent');
+const draggableElements = document.querySelectorAll('.image');
 
-function allowDrop(event) {
-  event.preventDefault(); // Allow dropping by preventing the default behavior
-}
+// Add drag and drop event listeners
+draggableElements.forEach((element) => {
+  element.addEventListener('dragstart', (event) => {
+    // Store the ID of the dragged element
+    event.dataTransfer.setData('text/plain', event.target.id);
 
-function drag(event) {
-  draggedElement = event.target.closest(".image"); // Store the dragged element
-  event.dataTransfer.setData("text/plain", ""); // Enable drag-and-drop functionality in some browsers
-}
+    // Add a class to visually indicate dragging
+    event.target.classList.add('selected');
+  });
 
-function drop(event) {
-  event.preventDefault(); // Prevent default handling of the drop event
+  element.addEventListener('dragend', (event) => {
+    // Remove the visual indicator class
+    event.target.classList.remove('selected');
+  });
 
-  const targetElement = event.target.closest(".image"); // The element being dropped onto
+  element.addEventListener('dragover', (event) => {
+    // Allow the drop by preventing the default behavior
+    event.preventDefault();
 
-  if (draggedElement && targetElement && draggedElement !== targetElement) {
-    // Perform the swap operation
-    const temp = document.createElement("div"); // Temporary placeholder
-    targetElement.replaceWith(temp); // Replace target with temporary element
-    draggedElement.replaceWith(targetElement); // Replace dragged with target
-    temp.replaceWith(draggedElement); // Replace temporary element with dragged
-  }
-}
+    // Add a hover effect
+    event.target.classList.add('hover');
+  });
 
-// Add event listeners dynamically
-document.querySelectorAll(".image").forEach((element) => {
-  element.setAttribute("draggable", "true");
-  element.addEventListener("dragstart", drag);
-  element.addEventListener("dragover", allowDrop);
-  element.addEventListener("drop", drop);
+  element.addEventListener('dragleave', (event) => {
+    // Remove the hover effect
+    event.target.classList.remove('hover');
+  });
+
+  element.addEventListener('drop', (event) => {
+    // Prevent default behavior
+    event.preventDefault();
+
+    // Remove the hover effect
+    event.target.classList.remove('hover');
+
+    // Get the ID of the dragged element
+    const draggedId = event.dataTransfer.getData('text/plain');
+    const draggedElement = document.getElementById(draggedId);
+
+    // Get the target element
+    const targetElement = event.target;
+
+    // Ensure both elements exist and are not the same
+    if (draggedElement && draggedElement !== targetElement) {
+      // Swap the positions of the dragged and target elements
+      const draggedSibling = draggedElement.nextElementSibling === targetElement ? draggedElement : draggedElement.nextElementSibling;
+      container.insertBefore(draggedElement, targetElement.nextElementSibling);
+      container.insertBefore(targetElement, draggedSibling);
+    }
+  });
 });
