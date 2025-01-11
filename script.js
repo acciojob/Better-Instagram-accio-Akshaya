@@ -47,8 +47,12 @@ draggableElements.forEach((element) => {
     // Ensure both elements exist and are not the same
     if (draggedElement && draggedElement !== targetElement) {
       // Swap the positions of the dragged and target elements
-      const draggedSibling = draggedElement.nextElementSibling === targetElement ? draggedElement : draggedElement.nextElementSibling;
-      container.insertBefore(draggedElement, targetElement.nextElementSibling);
+      const draggedSibling =
+        draggedElement.nextElementSibling === targetElement
+          ? draggedElement
+          : draggedElement.nextElementSibling;
+
+      container.insertBefore(draggedElement, targetElement.nextSibling);
       container.insertBefore(targetElement, draggedSibling);
     }
   });
