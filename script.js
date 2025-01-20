@@ -1,32 +1,24 @@
-var dragElements = document.querySelectorAll('.drag');
-for(var i = 0; i < dragElements.length; i++) {
-    dragElements[i].setAttribute('draggable', 'true');
-}
-for(var i = 0; i < dragElements.length; i++) {
-    dragElements[i].addEventListener('dragstart', function(event) {
-        event.dataTransfer.setData('text/plain', event.target.id);
-    });
+let draggedElement = null;
 
-    dragElements[i].addEventListener('dragend', function(event) {
-        // You can add code here to do something when the drag ends if you want
-    });
-}
-var container = document.querySelector('.container');
-container.addEventListener('dragover', function(event) {
-    event.preventDefault(); // This is necessary to allow a drop
-});
+    function dragStart(event) {
+      draggedElement = event.target.closest('.image');
+      draggedElement.classList.add('dragging');
+    }
 
-container.addEventListener('drop', function(event) {
-    event.preventDefault(); // This is necessary to allow a drop
+    function allowDrop(event) {
+      event.preventDefault();
+    }
 
-    var draggedElementId = event.dataTransfer.getData('text/plain');
-    var draggedElement = document.getElementById(draggedElementId);
+    function drop(event) {
+      event.preventDefault();
+      const target = event.target.closest('.image');
 
-    var dropTarget = event.target;
-    var temp = document.createElement('div');
-    
-    container.insertBefore(temp, draggedElement);
-    container.insertBefore(draggedElement, dropTarget);
-    container.insertBefore(dropTarget, temp);
-    container.removeChild(temp);
-});
+      if (target && target !== draggedElement) {
+        // Swap the inner HTML of the dragged and target elements
+        const draggedHTML = draggedElement.innerHTML;
+        draggedElement.innerHTML = target.innerHTML;
+        target.innerHTML = draggedHTML;
+
+        draggedElement.classList.remove('dragging');
+      }
+    }
