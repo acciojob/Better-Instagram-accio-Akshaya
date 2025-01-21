@@ -1,25 +1,46 @@
-let draggedElement = null;
+let dragindex = 0;
+let dropindex = 0;
+let clone = "";
 
-    function dragStart(event) {
-      draggedElement = event.target.closest('.image-container');
-      draggedElement.classList.add('dragging');
+const images = document.querySelectorAll(".image");
+
+function drag(e) {
+  e.dataTransfer.setData("text", e.target.id);
+}
+
+function allowDrop(e) {
+  e.preventDefault();
+}
+
+function drop(e) {
+  clone = e.target.cloneNode(true);
+  let data = e.dataTransfer.getData("text");
+  let nodelist = document.getElementById("parent").childNodes;
+  console.log(data, e.target.id);
+  for (let i = 0; i < nodelist.length; i++) {
+    if (nodelist[i].id == data) {
+      dragindex = i;
     }
+  }
 
-    function allowDrop(event) {
-      event.preventDefault(); // Necessary to allow dropping
-    }
+  dragdrop(clone);
 
-    function drop(event) {
-      event.preventDefault();
-      const target = event.target.closest('.image-container');
-      
-      if (target && target !== draggedElement) {
-        // Swap inner HTML between dragged and target elements
-        const draggedHTML = draggedElement.innerHTML;
-        draggedElement.innerHTML = target.innerHTML;
-        target.innerHTML = draggedHTML;
+  document
+    .getElementById("parent")
+    .replaceChild(document.getElementById(data), e.target);
 
-        // Remove the dragging class
-        draggedElement.classList.remove('dragging');
-      }
-	}	
+  document
+    .getElementById("parent")
+    .insertBefore(
+      clone,
+      document.getElementById("parent").childNodes[dragindex]
+    );
+}
+
+const dragdrop = (image) => {
+  image.ondragstart = drag;
+  image.ondragover = allowDrop;
+  image.ondrop = drop;
+};
+
+images.forEach(dragdrop);
